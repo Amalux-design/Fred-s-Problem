@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fred's Streaming Story - UX Case Study</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: inherit;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            color: #1a202c;
+            background-color: #ffffff;
+            height: 100%;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Typography */
+        /* Display font class for headings you want serif */
+.display-font {
+    font-family: 'Source Serif Pro', serif;
+}
+
+/* Default h1 styling using Inter */
+h1 {
+    font-family: 'Inter', sans-serif; /* keep Inter for main headings */
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+    /* Remove hardcoded font-weight so Tailwind works */
+}
+
+/* h2 headings */
+h2 {
+    font-family: 'Source Serif Pro', serif; /* keep Source Serif Pro for h2 */
+    font-size: clamp(2.25rem, 4vw, 3.5rem);
+    line-height: 1.2;
+    margin-bottom: 2rem;
+    color: #2d3748;
+    /* Remove hardcoded font-weight */
+}
+
+/* h3 headings */
+h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    margin-bottom: 1.5rem;
+    color: #2d3748;
+    /* Remove hardcoded font-weight */
+}
+
+/* Paragraphs */
+p {
+    font-family: 'Inter', sans-serif; /* default to Inter */
+    font-size: 1.125rem;
+    max-width: 70ch;
+    color: #4a5568;
+    font-weight: 400; /* ok to keep */
+    margin-bottom: 2rem;
+}
+
+        /* Sections */
+        section {
+            padding: 2rem 0;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Section */
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #745552 0%, #A17A5E 40%, #C1876C 70%, #C2A085 100%);
+
+    color: #f7f7f7; /* light text for contrast */
+    text-align: left;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    opacity: 1;
+    transform: none;
+    position: relative;
+    overflow: hidden;
+}
+
+
+
+        .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0); /* keep transparent */
+    z-index: 1;
+    pointer-events: none; /* allows clicking/selecting text through it */
+}
+
+
+        .hero-content {
+            width: 100%;
+            z-index: 2;
+            position: relative;
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            color: rgb(255, 255, 255);
+            margin-bottom: 2rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgb(214, 214, 214);
+            margin-bottom: 4rem;
+            opacity: 0.95;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .hero-image {
+            width: 400px;
+            height: 400px;
+            margin-bottom: 3rem;
+            border-radius: 8px;
+            
+            
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #e50914;
+            color: white;
+            padding: 1.25rem 3rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.125rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 2rem;
+            border: 2px solid #e50914;
+        }
+
+        .cta-button:hover {
+            background: transparent;
+            color: #e50914;
+            background: white;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.3);
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: #ffffff;
+            margin: 0;
+            border-radius: 0;
+            padding: 6rem 0;
+            box-shadow: none;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .content-section:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .section-image {
+            width: 100%;
+            height: auto;
+            max-width: 100%; 
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Quote Box */
+        .quote-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #e50914;
+            padding: 3rem;
+            margin: 3rem 0;
+            border-radius: 8px;
+            font-style: italic;
+            font-size: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            position: relative;
+            
+        }
+        
+
+        
+
+        /* Insights List */
+        .insights-list {
+            list-style: none;
+            margin: 3rem 0;
+        }
+
+        .insights-list li {
+            background: #ffffff;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #e50914;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .insights-list li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        /* Before/After Comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin: 4rem 0;
+        }
+
+        .comparison-item {
+            text-align: center;
+        }
+
+        .comparison-item h4 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .comparison-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Metrics */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #4a5568;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #e50914;
+        }
+
+        .metric-number {
+            font-size: 3rem;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #e7e7e7;
+        }
+
+        .metric-card span:last-child {
+            font-size: 1.125rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a202c;
+            color: white;
+            text-align: center;
+            padding: 4rem 0;
+            border-top: 1px solid #2d3748;
+        }
+
+        .social-icons {
+            margin-top: 2rem;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            margin: 0 1.5rem;
+            color: #a0aec0;
+            text-decoration: none;
+            font-size: 1.125rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: 1px solid #4a5568;
+        }
+
+        .social-icons a:hover {
+            color: #e50914;
+            border-color: #e50914;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .section-grid,
+            .comparison {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .content-section {
+                padding: 4rem 0;
+            }
+
+            .hero {
+                text-align: center;
+            }
+
+            .hero-image {
+                width: 300px;
+                height: 300px;
+            }
+
+            section {
+                padding: 4rem 0;
+            }
+
+            .quote-box {
+                padding: 2rem;
+            }
+        }
+
+        /* Scroll Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<section class="hero bg-[#FFF8E7] h-auto md:h-screen flex flex-col md:flex-row items-start md:items-center">
+  <div class="container mx-auto px-6 h-auto flex items-start md:items-center">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between w-full gap-8">
+
+      <!-- Left Column: Image -->
+      <div class="md:w-1/2 flex justify-center md:justify-start h-auto">
+        <img src="https://res.cloudinary.com/dgxb8m8lr/image/upload/v1761282036/Frame_1597880459_uskp7i_ambcht.webp" 
+             alt="Fred the cartoon character looking excited about streaming" 
+             class="hero-image w-56 md:w-80 lg:w-96 object-contain max-h-full">
+      </div>
+
+      <!-- Right Column: Text + Button -->
+      <div class="md:w-1/2 flex flex-col items-center md:items-start justify-start text-center md:text-left space-y-4 h-auto">
+        <h1 class="display-font text-3xl md:text-5xl font-semibold text-[#1a202c] leading-snug relative z-10">
+          How I helped Fred find his favorite show.
+        </h1>
+        
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+    <section id="meet-fred">
+  <div class="container">
+    <div class="content-section">
+      <div class="section-grid">
+        <!-- Image first on desktop -->
+        <img src="https://res.cloudinary.com/dgxb8m8lr/image/upload/v1761227759/ltlbfn4olsz7d96zw5ee_kyptpc.avif" 
+             alt="Fred looking thoughtful while holding a remote control" 
+             class="section-image">
+
+        <!-- Text second on desktop -->
+        <div>
+          <h2 class="display-font">Meet Fred 👋</h2>
+          <p>Fred, a 32-year-old school teacher, unwinds after work by binge-watching his favorite shows.</p> 
+          <p>While he loves sci-fi, he often switches genres based on his mood and enjoys discovering new movies and shows.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+   <!-- The Problem -->
+<section id="problem" style="padding: 4rem 0;">
+  <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
+    
+    <div class="content-section" style="background: #fff;  border-radius: 0; border-bottom: 1px solid #e2e8f0;">
+      <h2 class="display-font" style="text-align: left; margin-bottom: 3rem;">Fred's Problem</h2>
+
+      <!-- Grid -->
+      <div class="section-grid" style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 2rem;">
+        
+        <!-- Text Column -->
+        <div>
+          <p>
+            Fred's streaming experience was plagued by several critical issues that transformed his leisure time into a frustrating hunt for content. The platform's categorisation system is weak making navigation time-consuming.
+          </p>
+
+          <div class="quote-box" style="margin: 1.5rem 0; font-style: italic;">
+             "I spend more time looking for something that I like to watch than actually watching!" - Fred
+          </div>
+
+          <p>
+            Fred often struggled because navigating on his TV with a remote was cumbersome. Since he prefers watching different genres based on his mood, he had to search on Google beforehand just to find what to watch — a frustrating experience that disrupted his streaming routine.
+          </p>
+        </div>
+
+        <!-- Image Column -->
+        <div style="display: flex; justify-content: center; align-items: center;">
+          <img 
+            src="https://res.cloudinary.com/dgxb8m8lr/image/upload/v1761227758/fijknmpapllm64taffov_pkthjy.avif" 
+            alt="Illustration showing a frustrated user surrounded by cluttered interface elements"
+            style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;"
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Responsive Inline Style for Mobile -->
+  <style>
+    @media (max-width: 768px) {
+      #problem .section-grid {
+        grid-template-columns: 1fr !important; /* stack columns */
+        gap: 2rem !important;
+      }
+      #problem .section-grid > div:last-child {
+        margin-top: 2rem; /* space between text and image */
+      }
+    }
+  </style>
+</section>
+
+
+    <!-- Research & Insights -->
+    <section id="research">
+        <div class="container">
+            <div class="content-section">
+                <h2 class="display-font">Research & Insights</h2>
+                <div class="section-grid">
+                    <div>
+                        <p>I conducted comprehensive user research including 3 interviews, and a survey of streaming users sourced from Chat GPT. My research revealed pain points that were affecting user satisfaction.</p>
+                        
+                        <ul class="insights-list">
+                            <li><strong>78% of users</strong> Have difficuilty finding shows </li>
+                            <li><strong>65% users</strong> says there is lack of specific categorisation.</li>
+                            <li><strong>47% report</strong> says categorization is not accurately giving results</li>                            
+                            <li><strong>71% find</strong> current recommendations irrelevant to their interests</li>
+                        </ul>
+                    </div>
+                    <div style="display:flex;justify-content:center;align-items:center;">
+                        <img src="https://res.cloudinary.com/dgxb8m8lr/image/upload/v1761227758/zgjkifsgfahpvodjuos2_ft1qb8.avif" 
+                        alt="Bar chart showing user pain points and statistics" 
+                        class="section-image" 
+                        style="max-width:100%; height:auto; border-radius:8px;">
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Solution -->
+    <section id="solution">
+        <div class="container">
+            <div class="content-section">
+                <h2 class="display-font">How can I help Fred?</h2>
+                <p>Based on my research insights, I designed a <strong>Sub Genre level categorization</strong> + an <strong>AI integrated</strong> genre recommending <strong>Information Architecture</strong> system that provides recommendations. The Smart recommendation feature suggests sub genres based on Fred's genre selection giving Fred a great user experience.</p>
+
+                <div class="comparison" style="display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start;">
+    <div class="comparison-item">
+        <h4>Before</h4>
+        <!-- 16:9 ratio wrapper -->
+        <div style="position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; border-radius: 8px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+            <img src="https://res.cloudinary.com/dgxb8m8lr/image/upload/v1761282446/Screenshot_122_1_yvrzea_y07nyy.webp"
+                 alt="Screenshot of old cluttered streaming interface"
+                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+        </div>
+    </div>
+
+    <div class="comparison-item">
+        <h4>After</h4>
+        <!-- 16:9 ratio wrapper -->
+        <div style="position: relative; width: 100%; padding-top: 56.25%; overflow: hidden; border-radius: 8px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+            <img src="https://res.cloudinary.com/dgxb8m8lr/image/upload/v1761317075/image_18_fjdjqp.webp"
+                 alt="Screenshot of new clean streaming interface with Smart Resume"
+                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+        </div>
+                    </div>
+                </div>
+
+                <p>The new interface prioritizes solutions to Fred's problems. The new Sub Genre with AI integration intelligently suggests shows that Fred might like, giving Fred the flexibility to explore shows without searching on other platforms.</p>
+            </div>
+        </div>
+    </section>
+    <!-- Design Process -->
+    <section id="process">
+        <div class="container">
+            <div class="content-section">
+                <h2 class="display-font">Design Process</h2>
+                <div style="text-align: left; margin-bottom: 2rem;">
+                <div class="section-grid">
+                    <div>
+                        <h3>How a simple remote do the trick?</h3>
+                        <p>The process began with brainstorming the core problem: how to help users like Fred spend less time searching and more time watching across all streaming services.</p>
+                        <p>I then created detailed wireframes focusing on information architecture. My initial plan was to sub divide the genre so that users can land on their favourite show but later thought of introducing an AI along to do the hard job.</p> 
+                        <p>The final design was ready after 13 different iterations, ensuring that Fred and users like him could effortlessly find their favorite shows, eventhough they use a simple T.V remote.</p> 
+                    
+                    </div>
+                    <img src="https://res.cloudinary.com/dgxb8m8lr/image/upload/v1761227759/bordhqdwwdbbrcwqfm8w_lijd2o.avif" alt="Collection of wireframes and sketches showing the design evolution" class="section-image">
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact & Outcome -->
+    <section id="impact">
+    <div class="container">
+        <div class="content-section">
+            <h2 class="display-font">The Results</h2>
+            <div class="section-grid">
+                <div>
+                    <p>
+                        The Smart Genre categorisation is expected to have a huge impact on user engagement and satisfaction, with significant improvements across all key metrics.
+                    </p>
+
+                    <div class="quote-box">
+                        "Now I can just surf through the streaming app and land on exciting shows everytime without relying on 3rd party services" - Fred
+                    </div>
+                    
+                </div>
+
+                <img src="https://res.cloudinary.com/dgxb8m8lr/image/upload/v1761227759/e8qjrjmvnwicqzrdkvc3_hqwf6d.avif" 
+                     alt="Happy Fred enjoying his seamless streaming experience" 
+                     class="section-image">
+            </div>
+
+            <div class="metrics-section">
+                <div class="metrics">
+                    <div class="metric-card">
+                        <span class="metric-number">+45%</span>
+                        <span>User Engagement</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-number">-30%</span>
+                        <span>User Drop-offs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    
+
+
+
+<section id="conclusion" style="padding: 60px 20px; background-color: #fff;">
+  <div class="container" style=" margin: 0 auto; text-align: center;">
+
+    <!-- Text above the Figma embed -->
+    <div style="margin-bottom: 40px;">
+      <h3 class="display-font">Checkout the Protoype.</h3>
+      <p style="margin: 0 auto; text-align: center; width: 100%;">
+  Please wait a bit, Better experience is loading.
+</p>
+
+    </div>
+
+    <!-- Figma Embedded Prototype -->
+    <div style="position: relative; width: 100%; padding-top: 60%; margin: 0 auto;"> 
+      <iframe 
+        src="https://embed.figma.com/proto/OTw2ZMmyVfOmxGyJUKCfJ5/Dynamic-Genre-AI?page-id=0%3A1&node-id=159-508&viewport=-8029%2C-1296%2C0.21&scaling=scale-down-width&content-scaling=fixed&starting-point-node-id=159%3A508&embed-host=share" 
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px;" 
+        allowfullscreen
+        loading="lazy">
+      </iframe>
+    </div>
+    <div style="margin-top: 3rem; display: flex; justify-content: center; text-align: center; width: 100%;">
+  <p style="max-width: 700px;">
+    If you are interested in checking the unpolished but fully working prototype with AI integrated suggestions
+    <a href="http://amalanilkumar.in/Dynamic-Genre-AI---For-Stream-Services/" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       style="color: #443ad1; text-decoration: underline;">
+      click here.
+    </a>
+  </p>
+</div>
+
+
+
+  </div>
+</section>
+
+
+
+<section id="conclusion" style="padding: 60px 20px; background-color: #fff;">
+  <div class="container" style="margin: 0 auto; text-align: center;">
+
+    <!-- Added image below headline -->
+    <img 
+      src="https://res.cloudinary.com/dgxb8m8lr/image/upload/v1761227757/gjmhbduslut1psy9dtzc_b05hp5.avif" 
+      alt="Happy Fred reflecting on his learning" 
+      style="width: 100%;  height: auto; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); margin: 40px auto; display: block;"
+    >
+
+    <div style="margin-top: 3rem;">
+      <h3 class="display-font">Fred is happy now!</h3>
+    </div>
+    
+  </div>
+</section>
+
+
+
+    <!-- Conclusion -->
+    <section id="conclusion">
+        <div class="container">
+            <div class="content-section" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                <h2 class="display-font">What I Learned</h2>
+                <p style="max-width: 70ch; margin: 1rem auto;">
+                    This project reinforced the importance of user-centered design and the power of solving real, everyday frustrations. By focusing on Fred's core needs rather than adding more features, we created a solution that truly improved the user experience.
+                </p>
+
+                <p style="max-width: 70ch; margin: 1rem auto;">
+                    Key learnings included the critical importance of cross-device continuity in modern streaming habits, the value of progressive disclosure in interface design, and how small improvements in user flow can lead to significant engagement gains.
+                </p>
+
+                <p style="max-width: 70ch; margin: 1rem auto;">
+                    Future improvements will focus on enhanced accessibility features, voice control integration, and even smarter content recommendations based on viewing context and time of day.
+                </p>
+
+                <div style="text-align: center; margin-top: 3rem;">
+                    <h3 class="display-font">Thanks  for scrolling 11888 pixels</h3>
+                    <p>I'd love to hear your thoughts on this case study.</p>
+                </div>
+                <div class="social-icons" style="display: flex; gap: 1.5rem;">
+      <a href="https://www.linkedin.com/in/amal-anilkumar-ux" 
+   aria-label="LinkedIn"
+   target="_blank" 
+   rel="noopener noreferrer"
+   style="color: #494949; text-decoration: none; font-weight: 400; transition: color 0.3s ease;"
+   onmouseover="this.style.color='#494949'" 
+   onmouseout="this.style.color='#494949'">
+   LinkedIn
+</a>
+
+<a href="https://amalanilkumar.in/" 
+   aria-label="Portfolio"
+   target="_blank" 
+   rel="noopener noreferrer"
+   style="color: #494949; text-decoration: none; font-weight: 400; transition: color 0.3s ease;"
+   onmouseover="this.style.color='#494949'" 
+   onmouseout="this.style.color='#494949'">
+   Website
+</a>
+
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+    <!-- Footer -->
+        <!-- Footer -->
+<footer style="background: linear-gradient(135deg, #000000, #000000); color: #f0f0f0; padding: 2.5rem 0 1rem 0; font-family: 'Inter', sans-serif; text-align: center;">
+  <div class="container" style="max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+    
+
+    <p style="font-size: 0.85rem; color: #444444;  padding-top: 1rem; padding-bottom: 1rem; width: 100%; max-width: 800px;">
+      &copy; All rights reserved to <strong>Amalanilkumar</strong>.
+    </p>
+  </div>
+</footer>
+
+
+        
+
+    <script>
+        // Smooth scroll animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections except hero
+        document.querySelectorAll('section:not(.hero)').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Smooth scroll for CTA button
+        document.querySelector('.cta-button').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelector('#meet-fred').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992ff66d831dc91f',t:'MTc2MTIwOTE3Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
